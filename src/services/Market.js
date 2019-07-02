@@ -7,9 +7,16 @@ let handlers = {};
 
 let newStocks = [];
 
+let websocketUrl = {
+    production : 'wss://stocks.mnet.website',
+    development: 'ws://stocks.mnet.website'
+};
+
 class Market {
     constructor() {
-        this.socket = new WebSocket('ws://stocks.mnet.website');
+        let env = process.env.NODE_ENV || 'development';
+        let url = websocketUrl[env];
+        this.socket = new WebSocket(url);
     }
 
     subscribeForNewStocks(handler) {
