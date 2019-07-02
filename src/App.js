@@ -1,26 +1,59 @@
 import React from 'react';
-import logo from './logo.svg';
 import './App.css';
+import Stock from './components/stock/Stock';
+import Market from './services/Market';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+
+class App extends React.Component {
+
+	constructor(props) {
+		super(props);
+		this.newStock = this.newStock.bind(this);
+		this.state = {
+			stocks : []
+		};
+	}
+
+	newStock(stock) {
+		debugger;
+		let stocks = this.state.stocks;
+		stocks.push(stock);
+		this.setState({
+			stocks : stocks
+		});
+	}
+
+	componentDidMount() {
+		Market.getInstance().init();
+		Market.getInstance().subscribeForNewStocks(this.newStock);
+	}
+
+	render() {
+		let stocksHTML = this.state.stocks.map(stock => {
+			return <Stock name={stock} />
+		});
+		return (
+			<div className="App">
+				<header className="App-header">
+					{/* <img src={logo} className="App-logo" alt="logo" /> */}
+					<div>
+						<table>
+							<thead>
+								<tr>
+									<td>Stock</td>
+									<td>Price</td>
+									<td>Last Update</td>
+								</tr>
+							</thead>
+							<tbody>
+								{stocksHTML}
+							</tbody>
+						</table>
+					</div>
+				</header>
+			</div>
+		);
+	}
 }
 
 export default App;

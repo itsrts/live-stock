@@ -1,0 +1,26 @@
+
+.normal {
+    color: white;
+}
+
+.low {
+    color: red;
+}
+
+.high {
+    color: green;
+}
+
+tr {
+    padding: 10px;
+}
+
+td {
+    padding: 10px;
+    text-align: center;
+    min-width: 10em;
+}
+
+.timeUpdated {
+    font-size: 14px;
+}
