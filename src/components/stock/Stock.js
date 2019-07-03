@@ -14,6 +14,7 @@ class Stock extends React.Component {
         this.stock = Market.getInstance().getStockPrice(this.name);
         this.updateStock = this.updateStock.bind(this);
         this.updateTime = this.updateTime.bind(this);
+        // 
         this.timer = setTimeout(this.updateTime, 1000);
         this.state = {name : props.name, time : '', stock : '', color : 'normal'};
     }
@@ -32,15 +33,16 @@ class Stock extends React.Component {
         this.setState({
             time : time
         });
+        // check if the call is required to be recursive
         if(!noRepeat) {
             this.timer = setTimeout(this.updateTime, 5000);
         }
     }
 
     updateStock(stock) {
-        // check the latest update
         let color = '';
 
+        // parse for any possible string representation
         this.stock = parseFloat(this.stock);
         stock = parseFloat(stock).toFixed(2);
 
@@ -52,15 +54,18 @@ class Stock extends React.Component {
             color = 'normal';
         }
         this.stock = stock;
+        // update stock and color
         this.setState({
             stock : stock,
             color : color
         });
         this.time = new Date().getTime();
+        // update Time with noRepeat=true
         this.updateTime(true);
     }
 
     componentDidMount() {
+        // subscribe for stock price update
         Market.getInstance().subscribe(this.name, this.updateStock);
     }
 

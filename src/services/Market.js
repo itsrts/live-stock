@@ -66,7 +66,7 @@ class Market {
     }
 
     init() {
-        this.socket.onopen = function () {
+        this.socket.onopen = () => {
             this.publishMarketStatus('The market is up and moving, Connection OK');
             console.log('Connected!');
         };

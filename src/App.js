@@ -33,6 +33,7 @@ class App extends React.Component {
 
 	componentDidMount() {
 		Market.getInstance().init();
+		// subscribe for events
 		Market.getInstance().subscribeForNewStocks(this.newStock);
 		Market.getInstance().subscribeForMarketStatus(this.marketStatus);
 		
