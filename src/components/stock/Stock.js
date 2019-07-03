@@ -22,12 +22,10 @@ class Stock extends React.Component {
         // check for stock price
         let time = new Date().getTime();
         time -= this.time;
-        if(time < 10000) {
-            time = 'Just Updated';
-        } else if(time < 30000) {
+        if(time < 30000) {
             time = 'Few seconds ago';
-        } else if(time < 300000) {
-            time = 'Minutes ago';
+        } else if(time < 6000) {
+            time = 'Minute(s) ago';
         } else {
             time = new Date(this.time).toLocaleTimeString();
         }

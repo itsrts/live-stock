@@ -9,8 +9,10 @@ class App extends React.Component {
 	constructor(props) {
 		super(props);
 		this.newStock = this.newStock.bind(this);
+		this.marketStatus = this.marketStatus.bind(this);
 		this.state = {
-			stocks : []
+			stocks : [],
+			status : ''
 		};
 	}
 
@@ -23,18 +25,32 @@ class App extends React.Component {
 		});
 	}
 
+	marketStatus(status) {
+		this.setState({
+			status : status
+		});
+	}
+
 	componentDidMount() {
 		Market.getInstance().init();
 		Market.getInstance().subscribeForNewStocks(this.newStock);
+		Market.getInstance().subscribeForMarketStatus(this.marketStatus);
+		
 	}
 
 	render() {
-		let stocksHTML = this.state.stocks.map(stock => {
-			return <Stock name={stock} />
-		});
+		let stocksHTML = '';
+		if(this.state.stocks.length === 0) {
+			stocksHTML = <tr><td colspan='3'>Loading ...</td></tr>;
+		} else {
+			stocksHTML = this.state.stocks.map(stock => {
+				return <Stock name={stock} />
+			});
+		}
 		return (
 			<div className="App">
 				<header className="App-header">
+					<h1>{this.state.status}</h1>
 					{/* <img src={logo} className="App-logo" alt="logo" /> */}
 					<div>
 						<table>

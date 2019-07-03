@@ -7,6 +7,8 @@ let handlers = {};
 
 let newStocks = [];
 
+let marketStatus = [];
+
 let websocketUrl = {
     production : 'wss://stocks.mnet.website',
     development: 'ws://stocks.mnet.website'
@@ -21,6 +23,10 @@ class Market {
 
     subscribeForNewStocks(handler) {
         newStocks.push(handler);
+    }
+
+    subscribeForMarketStatus(handler) {
+        marketStatus.push(handler);
     }
 
     subscribe(stock, handler) {
@@ -47,8 +53,21 @@ class Market {
         }
     }
 
+    publishNewStock(name) {
+        newStocks.forEach(handler => {
+            handler.call(null, name);
+        });
+    }
+
+    publishMarketStatus(status) {
+        marketStatus.forEach(handler => {
+            handler.call(null, status);
+        });
+    }
+
     init() {
         this.socket.onopen = function () {
+            this.publishMarketStatus('The market is up and moving, Connection OK');
             console.log('Connected!');
         };
         this.socket.onmessage = (event) => {
@@ -59,19 +78,19 @@ class Market {
                 let stock = element[1];
                 // check if it is a new stock
                 if(!stats[name]) {
-                    newStocks.forEach(handler => {
-                        handler.call(null, name);
-                    });
+                    this.publishNewStock(name);
                 }
                 stats[name] = stock;
                 this.publish(name, stock);
             });
             console.log(JSON.stringify(stats));
         };
-        this.socket.onclose = function () {
+        this.socket.onclose = () => {
+            this.publishMarketStatus('The market seems closed for now, Connection Lost');
             console.log('Lost connection!');
         };
-        this.socket.onerror = function () {
+        this.socket.onerror = () => {
+            this.publishMarketStatus(`There's too much chaos in the market, some ERROR occured`);
             console.log('Error!');
         };
     }
